@@ -52,12 +52,18 @@ EFI_STATUS Event_Del(struct EventSlot *EvtSlot)
 	if (EvtSlot == EventSlotHead) {
 		EventSlotHead = EvtSlot->next;
 	}
+	struct EventSlot *PrevSlot;
+	PrevSlot = EvtSlot;
+	while(PrevSlot->next != EvtSlot) {
+	    PrevSlot = PrevSlot->next;
+	}
+	PrevSlot->next = EvtSlot->next;
 	EFI_STATUS Status;
 	Status = GST->BootServices->FreePool(EvtSlot);
-	if (EFI_ERROR(Status)) {
-		return Status;
-	}
 	EventSlotNums -= 1;
+	if (EventSlotNums == 0) {
+        EventSlotHead = NULL;
+	}
 	return Status;
 }
 
