@@ -6,6 +6,7 @@ images/*
 input/*
 *.EFI
 *.lib
+*.pdb
 *.su
 *.dis
 *~
