@@ -78,4 +78,19 @@ void forth_init_io(void)
 	THEN();
 	COMPILE(L"CR", L"DROP", L"EXIT");
 	ENDW();
+
+	DFWL(L"DELAYUS", O_DELAYUS);
+	DESC(L" ( COUNT -- )");
+	ENDW();
+
+	DFWH(L"DELAYMS");
+	DESC(L" ( COUNT -- )");
+	LIT(1000); COMPILE(L"*", L"DELAYUS", L"EXIT");
+	ENDW();
+
+	DFWH(L"DELAYS");
+	DESC(L" ( COUNT -- )");
+	// : TEST-DELAYS DUP IF BEGIN $1 DELAYS DUP . CR 1- DUP 0= UNTIL THEN DROP ;
+	LIT(1000 * 1000); COMPILE(L"*", L"DELAYUS", L"EXIT");
+	ENDW();
 }

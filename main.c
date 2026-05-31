@@ -97,6 +97,17 @@ void cb_ConInWaitForKey(struct EventSlot *EvtSlot, EFI_STATUS Status)
 	}
 }
 
+void cb_DelayUs(struct EventSlot *EvtSlot, EFI_STATUS Status)
+{
+	if (EFI_ERROR(Status)) {
+		return;
+	}
+	struct forth_context *fctx = EvtSlot->Context;
+	fctx->delayus_done = true;
+	GST->BootServices->CloseEvent(EvtSlot->Event);
+	Event_Del(EvtSlot);
+}
+
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
 			   EFI_SYSTEM_TABLE *SystemTable)
 {

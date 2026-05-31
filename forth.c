@@ -912,6 +912,38 @@ forth_wait_early_wkey:
 	case O_EARLY_ECHO_ON:
 		early_echo = true;
 		break;
+	case O_DELAYUS: {
+		uint64_t delay_100ns = fctx->tos * 10;
+		fctx->tos = forth_ppop(fctx);
+		EFI_EVENT TimerEvent;
+		EFI_STATUS Status;
+		Status = GST->BootServices->CreateEvent(EVT_TIMER, 0, NULL,
+							NULL, &TimerEvent);
+		if (EFI_ERROR(Status)) {
+			debug_putws(L"DELAYUS: CREATE EVENT FAIL\r\n");
+			break;
+		}
+		Status = GST->BootServices->SetTimer(TimerEvent, TimerRelative,
+						     delay_100ns);
+		if (EFI_ERROR(Status)) {
+			GST->BootServices->CloseEvent(TimerEvent);
+			debug_putws(L"DELAYUS: SET TIMER FAIL\r\n");
+			break;
+		}
+		Event_Add(TimerEvent, cb_DelayUs, fctx);
+		fctx->delayus_done = false;
+	}
+forth_wait_delayus:
+		if (fctx->delayus_done == false) {
+			fctx->wait_state = FORTH_WAIT_DELAYUS;
+			fctx->save = &&forth_wait_delayus;
+			return;
+		}
+		fctx->wait_state = FORTH_WAIT_NOOP;
+		fctx->save = NULL;
+		fctx->delayus_done = false;
+		break;
+		break;
 	default:
 		fctx->sta |= FORTH_STA_HALT;
 		forth_dump_ctx(fctx);

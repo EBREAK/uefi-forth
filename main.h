@@ -20,3 +20,4 @@ extern struct EventSlot *Event_Add(EFI_EVENT Event,
 				   void (*CallBack)(struct EventSlot *EvtSlot,
 						    EFI_STATUS Status),
 				   VOID *Context);
+extern void cb_DelayUs(struct EventSlot *EvtSlot, EFI_STATUS Status);

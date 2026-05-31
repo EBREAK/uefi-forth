@@ -85,6 +85,7 @@ struct forth_context {
 
 	int wait_state;
 	void *save;
+	bool delayus_done;
 };
 
 enum {
@@ -99,6 +100,7 @@ enum {
 enum {
 	FORTH_WAIT_NOOP = 0,
 	FORTH_WAIT_EARLY_WKEY,
+	FORTH_WAIT_DELAYUS,
 };
 
 extern void forth_init(void);
@@ -174,6 +176,7 @@ enum {
 	O_USER_WEMIT,
 	O_USER_WKEY,
 	O_USER_DOT,
+	O_DELAYUS,
 
 	// INTERPRET WORDS
 	O_FIND,
