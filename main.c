@@ -1,19 +1,13 @@
 #include <efi.h>
 #include <efilib.h>
 
+#include "main.h"
 #include "fifo.h"
 #include "debug.h"
 #include "forth.h"
 
 EFI_HANDLE GIH = NULL;
 EFI_SYSTEM_TABLE *GST = NULL;
-
-struct EventSlot {
-	struct EventSlot *next;
-	EFI_EVENT Event;
-	void (*CallBack)(struct EventSlot *EvtSlot, EFI_STATUS Status);
-	VOID *Context;
-};
 
 struct EventSlot *EventSlotHead = NULL;
 uint32_t EventSlotNums = 0;
