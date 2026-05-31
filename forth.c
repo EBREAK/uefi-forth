@@ -525,6 +525,166 @@ void forth_o_xt2body(struct forth_context *fctx)
 	fctx->tos = (uintptr_t)word->body;
 }
 
+void forth_o_cmove(struct forth_context *fctx)
+{
+	uint8_t *dst;
+	uint8_t *src;
+	uintptr_t length;
+	length = fctx->tos;
+	dst = forth_ppop(fctx);
+	src = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+
+	if (src < dst && dst < src + length) {
+		/* Have to copy backwards */
+		src += length;
+		dst += length;
+		while (length--) {
+			*--dst = *--src;
+		}
+	} else {
+		while (length--) {
+			*dst++ = *src++;
+		}
+	}
+}
+
+void forth_o_wmove(struct forth_context *fctx)
+{
+	uint16_t *dst;
+	uint16_t *src;
+	uintptr_t length;
+	length = fctx->tos;
+	dst = forth_ppop(fctx);
+	src = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+
+	if (src < dst && dst < src + length) {
+		/* Have to copy backwards */
+		src += length;
+		dst += length;
+		while (length--) {
+			*--dst = *--src;
+		}
+	} else {
+		while (length--) {
+			*dst++ = *src++;
+		}
+	}
+}
+
+void forth_o_lmove(struct forth_context *fctx)
+{
+	uint32_t *dst;
+	uint32_t *src;
+	uintptr_t length;
+	length = fctx->tos;
+	dst = forth_ppop(fctx);
+	src = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+
+	if (src < dst && dst < src + length) {
+		/* Have to copy backwards */
+		src += length;
+		dst += length;
+		while (length--) {
+			*--dst = *--src;
+		}
+	} else {
+		while (length--) {
+			*dst++ = *src++;
+		}
+	}
+}
+
+void forth_o_xmove(struct forth_context *fctx)
+{
+	uint64_t *dst;
+	uint64_t *src;
+	uintptr_t length;
+	length = fctx->tos;
+	dst = forth_ppop(fctx);
+	src = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+
+	if (src < dst && dst < src + length) {
+		/* Have to copy backwards */
+		src += length;
+		dst += length;
+		while (length--) {
+			*--dst = *--src;
+		}
+	} else {
+		while (length--) {
+			*dst++ = *src++;
+		}
+	}
+}
+
+void forth_o_cfill(struct forth_context *fctx)
+{
+	uint8_t *p;
+	uintptr_t cnt;
+	uint8_t c;
+	c = fctx->tos;
+	cnt = forth_ppop(fctx);
+	p = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+	while (cnt > 0) {
+		p[0] = c;
+		p += 1;
+		cnt -= 1;
+	}
+}
+
+void forth_o_wfill(struct forth_context *fctx)
+{
+	uint16_t *p;
+	uintptr_t cnt;
+	uint16_t c;
+	c = fctx->tos;
+	cnt = forth_ppop(fctx);
+	p = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+	while (cnt > 0) {
+		p[0] = c;
+		p += 1;
+		cnt -= 1;
+	}
+}
+
+void forth_o_lfill(struct forth_context *fctx)
+{
+	uint32_t *p;
+	uintptr_t cnt;
+	uint32_t c;
+	c = fctx->tos;
+	cnt = forth_ppop(fctx);
+	p = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+	while (cnt > 0) {
+		p[0] = c;
+		p += 1;
+		cnt -= 1;
+	}
+}
+
+void forth_o_xfill(struct forth_context *fctx)
+{
+	uint64_t *p;
+	uintptr_t cnt;
+	uint64_t c;
+	c = fctx->tos;
+	cnt = forth_ppop(fctx);
+	p = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+	while (cnt > 0) {
+		p[0] = c;
+		p += 1;
+		cnt -= 1;
+	}
+}
+
 void forth_run(struct forth_context *fctx)
 {
 	if (fctx == NULL) {
@@ -956,6 +1116,30 @@ forth_wait_delayus:
 	case O_TASK_NEW:
 		fctx->w = forth_task_new(fctx, fctx->tos);
 		fctx->tos = fctx->w;
+		break;
+	case O_CMOVE:
+		forth_o_cmove(fctx);
+		break;
+	case O_WMOVE:
+		forth_o_wmove(fctx);
+		break;
+	case O_LMOVE:
+		forth_o_lmove(fctx);
+		break;
+	case O_XMOVE:
+		forth_o_xmove(fctx);
+		break;
+	case O_CFILL:
+		forth_o_cfill(fctx);
+		break;
+	case O_WFILL:
+		forth_o_wfill(fctx);
+		break;
+	case O_LFILL:
+		forth_o_lfill(fctx);
+		break;
+	case O_XFILL:
+		forth_o_xfill(fctx);
 		break;
 	default:
 		fctx->sta |= FORTH_STA_HALT;
