@@ -92,7 +92,7 @@ void forth_test_interpret(void)
 	LIT(0x19AF);
 	COMPILE(L"=CHK", L"PZCHK");
 
-	// XT>WNAME XT>WNLEN XT>PREV
+	// XT>WNAME XT>WNLEN XT>PREV XT>BODY
 	struct forth_word *wtmp;
 	wtmp = forth_find(L"NOOP");
 	LIT((uintptr_t)wtmp);
@@ -107,6 +107,11 @@ void forth_test_interpret(void)
 	COMPILE(L"XT>PREV");
 	LIT(wtmp->prev);
 	COMPILE(L"=CHK");
+	LIT((uintptr_t)wtmp);
+	COMPILE(L"XT>BODY");
+	LIT(wtmp->body);
+	COMPILE(L"=CHK");
+
 	wtmp = forth_find(L"DUP");
 	LIT((uintptr_t)wtmp);
 	COMPILE(L"XT>WNAME");
@@ -119,6 +124,10 @@ void forth_test_interpret(void)
 	LIT((uintptr_t)wtmp);
 	COMPILE(L"XT>PREV");
 	LIT(wtmp->prev);
+	COMPILE(L"=CHK");
+	LIT((uintptr_t)wtmp);
+	COMPILE(L"XT>BODY");
+	LIT(wtmp->body);
 	COMPILE(L"=CHK", L"PZCHK");
 
 	// INTERPRET INTERPRET-FIX INTERPRET-LOOP

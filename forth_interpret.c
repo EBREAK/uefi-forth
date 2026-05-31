@@ -157,6 +157,8 @@ void forth_init_interpret(void)
 	ENDW();
 	DFWL(L"XT>PREV", O_XT2PREV);
 	ENDW();
+	DFWL(L"XT>BODY", O_XT2BODY);
+	ENDW();
 
 	DFWH(L"WORDS");
 	COMPILE(L"LATEST", L"X@");

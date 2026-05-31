@@ -518,6 +518,13 @@ void forth_o_xt2prev(struct forth_context *fctx)
 	fctx->tos = (uintptr_t)word->prev;
 }
 
+void forth_o_xt2body(struct forth_context *fctx)
+{
+	struct forth_word *word;
+	word = (struct forth_word *)fctx->tos;
+	fctx->tos = (uintptr_t)word->body;
+}
+
 void forth_run(struct forth_context *fctx)
 {
 	if (fctx == NULL) {
@@ -943,6 +950,12 @@ forth_wait_delayus:
 		fctx->save = NULL;
 		fctx->delayus_done = false;
 		break;
+	case O_XT2BODY:
+		forth_o_xt2body(fctx);
+		break;
+	case O_TASK_NEW:
+		fctx->w = forth_task_new(fctx, fctx->tos);
+		fctx->tos = fctx->w;
 		break;
 	default:
 		fctx->sta |= FORTH_STA_HALT;
