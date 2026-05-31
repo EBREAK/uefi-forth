@@ -93,4 +93,56 @@ void forth_init_io(void)
 	// : TEST-DELAYS DUP IF BEGIN $1 DELAYS DUP . CR 1- DUP 0= UNTIL THEN DROP ;
 	LIT(1000 * 1000); COMPILE(L"*", L"DELAYUS", L"EXIT");
 	ENDW();
+
+	DFWH(L"CDUMP");
+	DESC(L" ( ADDR COUNT -- )");
+	COMPILE(L"DUP");
+	IF();
+	BEGIN();
+	COMPILE(L"OVER", L"C@", L"$2", L"NHEX.", L"SPACE");
+	COMPILE(L"1-", L"SWAP", L"1+", L"SWAP");
+	COMPILE(L"DUP", L"0=");
+	UNTIL();
+	THEN();
+	COMPILE(L"2DROP", L"EXIT");
+	ENDW();
+
+	DFWH(L"WDUMP");
+	DESC(L" ( ADDR COUNT -- )");
+	COMPILE(L"DUP");
+	IF();
+	BEGIN();
+	COMPILE(L"OVER", L"W@", L"$4", L"NHEX.", L"SPACE");
+	COMPILE(L"1-", L"SWAP", L"$2", L"+", L"SWAP");
+	COMPILE(L"DUP", L"0=");
+	UNTIL();
+	THEN();
+	COMPILE(L"2DROP", L"EXIT");
+	ENDW();
+
+	DFWH(L"LDUMP");
+	DESC(L" ( ADDR COUNT -- )");
+	COMPILE(L"DUP");
+	IF();
+	BEGIN();
+	COMPILE(L"OVER", L"L@", L"$8", L"NHEX.", L"SPACE");
+	COMPILE(L"1-", L"SWAP", L"$4", L"+", L"SWAP");
+	COMPILE(L"DUP", L"0=");
+	UNTIL();
+	THEN();
+	COMPILE(L"2DROP", L"EXIT");
+	ENDW();
+
+	DFWH(L"XDUMP");
+	DESC(L" ( ADDR COUNT -- )");
+	COMPILE(L"DUP");
+	IF();
+	BEGIN();
+	COMPILE(L"OVER", L"X@"); LIT(16); COMPILE(L"NHEX.", L"SPACE");
+	COMPILE(L"1-", L"SWAP", L"$8", L"+", L"SWAP");
+	COMPILE(L"DUP", L"0=");
+	UNTIL();
+	THEN();
+	COMPILE(L"2DROP", L"EXIT");
+	ENDW();
 }
