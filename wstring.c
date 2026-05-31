@@ -20,7 +20,7 @@ bool wstrsame(CHAR16 *aws, CHAR16 *bws)
 	lena = wstrlen(aws);
 	lenb = wstrlen(bws);
 	if (lena != lenb) {
-        return false;
+		return false;
 	}
 	while (lena > 0) {
 		if (aws[0] != bws[0]) {

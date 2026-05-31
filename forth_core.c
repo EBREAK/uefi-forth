@@ -193,7 +193,9 @@ void forth_init_core(void)
 	COMPILE(L"DP", L"X@", L"EXIT");
 	ENDW();
 	DFWH(L"PAD");
-	COMPILE(L"HERE"); LIT(1024); COMPILE(L"+", L"EXIT");
+	COMPILE(L"HERE");
+	LIT(1024);
+	COMPILE(L"+", L"EXIT");
 	ENDW();
 
 	DFWL(L"C!", O_CSTORE);

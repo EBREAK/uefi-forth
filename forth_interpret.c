@@ -5,184 +5,222 @@
 const CHAR16 wstr_msg_not_found[] = L"NOT FOUND\r\n";
 const CHAR16 wstr_msg_pser[] = L"\r\nPARAM STACK ERROR\r\n";
 
-void forth_init_interpret(void) {
-    DFWL(L"FIND", O_FIND);
-    DESC(L"( WSTR-ADDR WCOUNT -- 0|XT ) \\ WSTR-ADDR IS ADDRESS FOR UTF16 STRING, WCOUNT IS UTF16 CHAR COUNT, IF FOUND RETURN XT, IF NOT FOUND RETURN 0");
-    ENDW();
+void forth_init_interpret(void)
+{
+	DFWL(L"FIND", O_FIND);
+	DESC(L"( WSTR-ADDR WCOUNT -- 0|XT ) \\ WSTR-ADDR IS ADDRESS FOR UTF16 STRING, WCOUNT IS UTF16 CHAR COUNT, IF FOUND RETURN XT, IF NOT FOUND RETURN 0");
+	ENDW();
 
-    DFWL(L"]", O_COMPON);
-    DESC(L"( -- ) \\ COMPILE STATE ON");
-    ENDW();
+	DFWL(L"]", O_COMPON);
+	DESC(L"( -- ) \\ COMPILE STATE ON");
+	ENDW();
 
-    DFWL(L"[", O_COMPOFF);
-    DESC(L"( -- ) \\ COMPILE STATE OFF");
-    ENDW();
-    IMMEDIATE();
+	DFWL(L"[", O_COMPOFF);
+	DESC(L"( -- ) \\ COMPILE STATE OFF");
+	ENDW();
+	IMMEDIATE();
 
-    DFWL(L"COMPILE?", O_COMPSTA);
-    DESC(L"( -- FLAG ) \\ RETURN COMPILE STATE, TRUE IS ON, FALSE IS OFF");
-    ENDW();
+	DFWL(L"COMPILE?", O_COMPSTA);
+	DESC(L"( -- FLAG ) \\ RETURN COMPILE STATE, TRUE IS ON, FALSE IS OFF");
+	ENDW();
 
-    DFWL(L"IMMEDIATE?", O_ISIMMEDIATE);
-    DESC(L"( XT -- FLAG ) \\ TRUE IS IMMEDIATED WORD, FALSE IS NORMAL WORD");
-    ENDW();
+	DFWL(L"IMMEDIATE?", O_ISIMMEDIATE);
+	DESC(L"( XT -- FLAG ) \\ TRUE IS IMMEDIATED WORD, FALSE IS NORMAL WORD");
+	ENDW();
 
-    DFWL(L"WIB", O_WIB);
-    ENDW();
-    DFWL(L"WIN", O_WIN);
-    ENDW();
-    CONSTANT(L"FORTH-NAME-MAXLEN", FORTH_NAME_MAXLEN);
-    ENDW();
-    DFWH(L"WIB-RST");
-    COMPILE(L"$0", L"WIN", L"X!", L"EXIT");
-    ENDW();
-    DFWH(L"WIB-PUSH");
-    // : WIB-PUSH WIN X@ FORTH-NAME-MAXLEN MOD 2* WIB + W! WIN X@ 1+ FORTH-NAME-MAXLEN MOD WIN X! ;
-    DESC(L"( WCHAR -- ) \\ PUSH WCHAR INTO WIB, AND UPDATE WIN, OVERFLOW WILL WRAPAROUND");
-    COMPILE(L"WIN", L"X@", L"FORTH-NAME-MAXLEN", L"MOD", L"2*", L"WIB", L"+", L"W!", L"WIN", L"X@", L"1+", L"FORTH-NAME-MAXLEN", L"MOD", L"WIN", L"X!", L"EXIT");
-    ENDW();
-    DFWH(L"DELIM?");
-    // : DELIM? ( WCHAR -- FLAG ) DUP $20 = OVER $D = OR SWAP $A = OR ;
-    COMPILE(L"DUP"); LIT(L' '); COMPILE(L"=", L"OVER", L"$D", L"=", L"OR", L"SWAP", L"$A", L"=", L"OR", L"EXIT");
-    ENDW();
-    DFWH(L"_WIB-WORD");
-    // : _WIB-WORD WIB-RST BEGIN WKEY DUP DELIM? IF DROP EXIT THEN WIB-PUSH AGAIN ;
-    COMPILE(L"WIB-RST"); BEGIN();
-    COMPILE(L"WKEY", L"DUP", L"DELIM?"); IF(); COMPILE(L"DROP", L"EXIT"); THEN();
-    COMPILE(L"WIB-PUSH"); AGAIN(); COMPILE(L"EXIT");
-    ENDW();
-    DFWH(L"WIB-WORD");
-    // : WIB-WORD BEGIN _WIB-WORD WIN X@ 0<> UNTIL ;
-    BEGIN(); COMPILE(L"_WIB-WORD", L"WIN", L"X@", L"0<>"); UNTIL(); COMPILE(L"EXIT");
-    ENDW();
+	DFWL(L"WIB", O_WIB);
+	ENDW();
+	DFWL(L"WIN", O_WIN);
+	ENDW();
+	CONSTANT(L"FORTH-NAME-MAXLEN", FORTH_NAME_MAXLEN);
+	ENDW();
+	DFWH(L"WIB-RST");
+	COMPILE(L"$0", L"WIN", L"X!", L"EXIT");
+	ENDW();
+	DFWH(L"WIB-PUSH");
+	// : WIB-PUSH WIN X@ FORTH-NAME-MAXLEN MOD 2* WIB + W! WIN X@ 1+ FORTH-NAME-MAXLEN MOD WIN X! ;
+	DESC(L"( WCHAR -- ) \\ PUSH WCHAR INTO WIB, AND UPDATE WIN, OVERFLOW WILL WRAPAROUND");
+	COMPILE(L"WIN", L"X@", L"FORTH-NAME-MAXLEN", L"MOD", L"2*", L"WIB",
+		L"+", L"W!", L"WIN", L"X@", L"1+", L"FORTH-NAME-MAXLEN", L"MOD",
+		L"WIN", L"X!", L"EXIT");
+	ENDW();
+	DFWH(L"DELIM?");
+	// : DELIM? ( WCHAR -- FLAG ) DUP $20 = OVER $D = OR SWAP $A = OR ;
+	COMPILE(L"DUP");
+	LIT(L' ');
+	COMPILE(L"=", L"OVER", L"$D", L"=", L"OR", L"SWAP", L"$A", L"=", L"OR",
+		L"EXIT");
+	ENDW();
+	DFWH(L"_WIB-WORD");
+	// : _WIB-WORD WIB-RST BEGIN WKEY DUP DELIM? IF DROP EXIT THEN WIB-PUSH AGAIN ;
+	COMPILE(L"WIB-RST");
+	BEGIN();
+	COMPILE(L"WKEY", L"DUP", L"DELIM?");
+	IF();
+	COMPILE(L"DROP", L"EXIT");
+	THEN();
+	COMPILE(L"WIB-PUSH");
+	AGAIN();
+	COMPILE(L"EXIT");
+	ENDW();
+	DFWH(L"WIB-WORD");
+	// : WIB-WORD BEGIN _WIB-WORD WIN X@ 0<> UNTIL ;
+	BEGIN();
+	COMPILE(L"_WIB-WORD", L"WIN", L"X@", L"0<>");
+	UNTIL();
+	COMPILE(L"EXIT");
+	ENDW();
 
-    DFWH(L"INTERPRET-RST");
-    COMPILE(L"PSP-RST", L"WIB-RST", L"[", L"EXIT");
-    ENDW();
+	DFWH(L"INTERPRET-RST");
+	COMPILE(L"PSP-RST", L"WIB-RST", L"[", L"EXIT");
+	ENDW();
 
-    DFWH(L"INTERPRET-FIX");
-    COMPILE(L"STA@", L"FORTH-STA-PSER", L"AND");
-    IF();
-    COMPILE(L"INTERPRET-RST"); LIT(&wstr_msg_pser[0]); LIT(wstrlen(wstr_msg_pser));
-    COMPILE(L"WTYPE");
-    THEN();
-    COMPILE(L"EXIT");
-    ENDW();
+	DFWH(L"INTERPRET-FIX");
+	COMPILE(L"STA@", L"FORTH-STA-PSER", L"AND");
+	IF();
+	COMPILE(L"INTERPRET-RST");
+	LIT(&wstr_msg_pser[0]);
+	LIT(wstrlen(wstr_msg_pser));
+	COMPILE(L"WTYPE");
+	THEN();
+	COMPILE(L"EXIT");
+	ENDW();
 
-    DFWL(L"NUMBER?", O_ISNUMBER);
-    DESC(L" ( WADDR COUNT -- FLAG ) ");
-    ENDW();
+	DFWL(L"NUMBER?", O_ISNUMBER);
+	DESC(L" ( WADDR COUNT -- FLAG ) ");
+	ENDW();
 
-    DFWL(L">NUMBER", O_TONUMBER);
-    DESC(L" ( WADDR COUNT -- NUM ) ");
-    ENDW();
+	DFWL(L">NUMBER", O_TONUMBER);
+	DESC(L" ( WADDR COUNT -- NUM ) ");
+	ENDW();
 
-    DFWH(L"INTERPRET");
-    COMPILE(L"WIB-WORD", L"WIB", L"WIN", L"X@", L"FIND", L"DUP");
-    IF();
-    COMPILE(L"DUP", L"IMMEDIATE?"); IF(); COMPILE(L"EXECUTE", L"EXIT"); THEN();
-    COMPILE(L"COMPILE?"); IF(); COMPILE(L"X,", L"EXIT"); THEN();
-    COMPILE(L"EXECUTE", L"EXIT");
-    THEN();
-    COMPILE(L"DROP", L"WIB", L"WIN", L"X@", L"2DUP", L"NUMBER?");
-    IF();
-    COMPILE(L">NUMBER", L"COMPILE?"); IF(); LIT(L"LIT"); LIT(wstrlen(L"LIT")); COMPILE(L"FIND", L"X,", L"X,"); THEN();
-    COMPILE(L"EXIT");
-    THEN();
-    COMPILE(L"DROP", L"WIB", L"WIN", L"X@", L"WTYPE", L"SPACE");
-    LIT(&wstr_msg_not_found[0]); LIT(wstrlen(wstr_msg_not_found));
-    COMPILE(L"WTYPE", L"INTERPRET-RST", L"EXIT");
-    ENDW();
+	DFWH(L"INTERPRET");
+	COMPILE(L"WIB-WORD", L"WIB", L"WIN", L"X@", L"FIND", L"DUP");
+	IF();
+	COMPILE(L"DUP", L"IMMEDIATE?");
+	IF();
+	COMPILE(L"EXECUTE", L"EXIT");
+	THEN();
+	COMPILE(L"COMPILE?");
+	IF();
+	COMPILE(L"X,", L"EXIT");
+	THEN();
+	COMPILE(L"EXECUTE", L"EXIT");
+	THEN();
+	COMPILE(L"DROP", L"WIB", L"WIN", L"X@", L"2DUP", L"NUMBER?");
+	IF();
+	COMPILE(L">NUMBER", L"COMPILE?");
+	IF();
+	LIT(L"LIT");
+	LIT(wstrlen(L"LIT"));
+	COMPILE(L"FIND", L"X,", L"X,");
+	THEN();
+	COMPILE(L"EXIT");
+	THEN();
+	COMPILE(L"DROP", L"WIB", L"WIN", L"X@", L"WTYPE", L"SPACE");
+	LIT(&wstr_msg_not_found[0]);
+	LIT(wstrlen(wstr_msg_not_found));
+	COMPILE(L"WTYPE", L"INTERPRET-RST", L"EXIT");
+	ENDW();
 
-    DFWH(L"INTERPRET-LOOP");
-    BEGIN(); COMPILE(L"INTERPRET", L"INTERPRET-FIX"); AGAIN();
-    ENDW();
+	DFWH(L"INTERPRET-LOOP");
+	BEGIN();
+	COMPILE(L"INTERPRET", L"INTERPRET-FIX");
+	AGAIN();
+	ENDW();
 
-    DFWL(L"WORD-NEW", O_WORD_NEW);
-    DESC(L" ( WADDR COUNT -- XT ) \\ CREATE NEW WORD, RETURN XT");
-    ENDW();
+	DFWL(L"WORD-NEW", O_WORD_NEW);
+	DESC(L" ( WADDR COUNT -- XT ) \\ CREATE NEW WORD, RETURN XT");
+	ENDW();
 
-    DFWH(L":");
-    DESC(L" ( -- XT )");
-    COMPILE(L"WIB-WORD", L"WIB", L"WIN", L"X@", L"WORD-NEW", L"]", L"EXIT");
-    ENDW();
+	DFWH(L":");
+	DESC(L" ( -- XT )");
+	COMPILE(L"WIB-WORD", L"WIB", L"WIN", L"X@", L"WORD-NEW", L"]", L"EXIT");
+	ENDW();
 
-    CONSTANT(L"LATEST", &FORTH_LATEST);
-    ENDW();
+	CONSTANT(L"LATEST", &FORTH_LATEST);
+	ENDW();
 
-    DFWH(L";");
-    DESC(L" ( XT -- )");
-    COMPILE(L"[", L"LATEST", L"X!");
-    // TODO: UPDATE BLEN
-    LIT(L"EXIT"); LIT(wstrlen(L"EXIT"));
-    COMPILE(L"FIND", L"X,", L"EXIT");
-    ENDW();
-    IMMEDIATE();
+	DFWH(L";");
+	DESC(L" ( XT -- )");
+	COMPILE(L"[", L"LATEST", L"X!");
+	// TODO: UPDATE BLEN
+	LIT(L"EXIT");
+	LIT(wstrlen(L"EXIT"));
+	COMPILE(L"FIND", L"X,", L"EXIT");
+	ENDW();
+	IMMEDIATE();
 
-    DFWL(L"XT>WNAME", O_XT2WNAME);
-    ENDW();
-    DFWL(L"XT>WNLEN", O_XT2WNLEN);
-    ENDW();
-    DFWL(L"XT>PREV", O_XT2PREV);
-    ENDW();
+	DFWL(L"XT>WNAME", O_XT2WNAME);
+	ENDW();
+	DFWL(L"XT>WNLEN", O_XT2WNLEN);
+	ENDW();
+	DFWL(L"XT>PREV", O_XT2PREV);
+	ENDW();
 
-    DFWH(L"WORDS");
-    COMPILE(L"LATEST", L"X@");
-    BEGIN();
-    COMPILE(L"DUP", L"XT>WNAME", L"OVER", L"XT>WNLEN", L"WTYPE", L"SPACE");
-    COMPILE(L"XT>PREV", L"DUP", L"0=");
-    UNTIL();
-    COMPILE(L"DROP", L"EXIT");
-    ENDW();
+	DFWH(L"WORDS");
+	COMPILE(L"LATEST", L"X@");
+	BEGIN();
+	COMPILE(L"DUP", L"XT>WNAME", L"OVER", L"XT>WNLEN", L"WTYPE", L"SPACE");
+	COMPILE(L"XT>PREV", L"DUP", L"0=");
+	UNTIL();
+	COMPILE(L"DROP", L"EXIT");
+	ENDW();
 
-    DFWH(L"BEGIN");
-    COMPILE(L"HERE", L"EXIT");
-    ENDW();
-    IMMEDIATE();
+	DFWH(L"BEGIN");
+	COMPILE(L"HERE", L"EXIT");
+	ENDW();
+	IMMEDIATE();
 
-    DFWH(L"AGAIN");
-    LIT(L"BRANCH"); LIT(wstrlen(L"BRANCH"));
-    COMPILE(L"FIND", L"X,", L"X,", L"EXIT");
-    ENDW();
-    IMMEDIATE();
+	DFWH(L"AGAIN");
+	LIT(L"BRANCH");
+	LIT(wstrlen(L"BRANCH"));
+	COMPILE(L"FIND", L"X,", L"X,", L"EXIT");
+	ENDW();
+	IMMEDIATE();
 
-    DFWH(L"UNTIL");
-    LIT(L"ZBRANCH"); LIT(wstrlen(L"ZBRANCH"));
-    COMPILE(L"FIND", L"X,", L"X,", L"EXIT");
-    ENDW();
-    IMMEDIATE();
+	DFWH(L"UNTIL");
+	LIT(L"ZBRANCH");
+	LIT(wstrlen(L"ZBRANCH"));
+	COMPILE(L"FIND", L"X,", L"X,", L"EXIT");
+	ENDW();
+	IMMEDIATE();
 
-    DFWH(L"IF");
-    LIT(L"ZBRANCH"); LIT(wstrlen(L"ZBRANCH"));
-    COMPILE(L"FIND", L"X,", L"HERE", L"$0", L"X,", L"EXIT");
-    ENDW();
-    IMMEDIATE();
+	DFWH(L"IF");
+	LIT(L"ZBRANCH");
+	LIT(wstrlen(L"ZBRANCH"));
+	COMPILE(L"FIND", L"X,", L"HERE", L"$0", L"X,", L"EXIT");
+	ENDW();
+	IMMEDIATE();
 
-    DFWH(L"THEN");
-    COMPILE(L"HERE", L"SWAP", L"X!", L"EXIT");
-    ENDW();
-    IMMEDIATE();
+	DFWH(L"THEN");
+	COMPILE(L"HERE", L"SWAP", L"X!", L"EXIT");
+	ENDW();
+	IMMEDIATE();
 
-    DFWH(L"'");
-    COMPILE(L"WIB-WORD", L"WIB", L"WIN", L"X@", L"FIND", L"EXIT");
-    ENDW();
+	DFWH(L"'");
+	COMPILE(L"WIB-WORD", L"WIB", L"WIN", L"X@", L"FIND", L"EXIT");
+	ENDW();
 
-    DFWH(L"(");
-    BEGIN();
-    COMPILE(L"WKEY"); LIT(L')'); COMPILE(L"=");
-    UNTIL();
-    COMPILE(L"EXIT");
-    ENDW();
-    IMMEDIATE();
+	DFWH(L"(");
+	BEGIN();
+	COMPILE(L"WKEY");
+	LIT(L')');
+	COMPILE(L"=");
+	UNTIL();
+	COMPILE(L"EXIT");
+	ENDW();
+	IMMEDIATE();
 
-    DFWH(L"\\");
-    BEGIN();
-    COMPILE(L"WKEY", L"DUP");
-    LIT(L'\r'); COMPILE(L"=", L"SWAP");
-    LIT(L'\n'); COMPILE(L"=", L"OR");
-    UNTIL();
-    COMPILE(L"EXIT");
-    ENDW();
-    IMMEDIATE();
-
+	DFWH(L"\\");
+	BEGIN();
+	COMPILE(L"WKEY", L"DUP");
+	LIT(L'\r');
+	COMPILE(L"=", L"SWAP");
+	LIT(L'\n');
+	COMPILE(L"=", L"OR");
+	UNTIL();
+	COMPILE(L"EXIT");
+	ENDW();
+	IMMEDIATE();
 }

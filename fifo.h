@@ -9,10 +9,10 @@
  */
 
 struct fifo8 {
-    uint8_t *buf;
-    unsigned long size;
-    atomic_ulong head;
-    atomic_ulong tail;
+	uint8_t *buf;
+	unsigned long size;
+	atomic_ulong head;
+	atomic_ulong tail;
 };
 
 extern void fifo8_reset(struct fifo8 *fifo);
@@ -25,10 +25,10 @@ extern bool fifo8_is_full(struct fifo8 *fifo);
 extern bool fifo8_is_empty(struct fifo8 *fifo);
 
 struct fifo16 {
-    uint16_t *buf;
-    unsigned long size;
-    atomic_ulong head;
-    atomic_ulong tail;
+	uint16_t *buf;
+	unsigned long size;
+	atomic_ulong head;
+	atomic_ulong tail;
 };
 
 extern void fifo16_reset(struct fifo16 *fifo);
@@ -41,10 +41,10 @@ extern bool fifo16_is_full(struct fifo16 *fifo);
 extern bool fifo16_is_empty(struct fifo16 *fifo);
 
 struct fifo32 {
-    uint32_t *buf;
-    unsigned long size;
-    atomic_ulong head;
-    atomic_ulong tail;
+	uint32_t *buf;
+	unsigned long size;
+	atomic_ulong head;
+	atomic_ulong tail;
 };
 
 extern void fifo32_reset(struct fifo32 *fifo);
@@ -57,10 +57,10 @@ extern bool fifo32_is_full(struct fifo32 *fifo);
 extern bool fifo32_is_empty(struct fifo32 *fifo);
 
 struct fifo64 {
-    uint64_t *buf;
-    unsigned long size;
-    atomic_ulong head;
-    atomic_ulong tail;
+	uint64_t *buf;
+	unsigned long size;
+	atomic_ulong head;
+	atomic_ulong tail;
 };
 
 extern void fifo64_reset(struct fifo64 *fifo);

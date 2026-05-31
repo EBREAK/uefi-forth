@@ -48,15 +48,15 @@ EFI_STATUS Event_Del(struct EventSlot *EvtSlot)
 	}
 	struct EventSlot *PrevSlot;
 	PrevSlot = EvtSlot;
-	while(PrevSlot->next != EvtSlot) {
-	    PrevSlot = PrevSlot->next;
+	while (PrevSlot->next != EvtSlot) {
+		PrevSlot = PrevSlot->next;
 	}
 	PrevSlot->next = EvtSlot->next;
 	EFI_STATUS Status;
 	Status = GST->BootServices->FreePool(EvtSlot);
 	EventSlotNums -= 1;
 	if (EventSlotNums == 0) {
-        EventSlotHead = NULL;
+		EventSlotHead = NULL;
 	}
 	return Status;
 }
@@ -90,10 +90,10 @@ void cb_ConInWaitForKey(struct EventSlot *EvtSlot, EFI_STATUS Status)
 		return;
 	}
 	if (early_echo) {
-    	debug_putwc(Key.UnicodeChar);
+		debug_putwc(Key.UnicodeChar);
 	}
 	if (fifo16_push(early_wkey_fifo, Key.UnicodeChar) == false) {
-	    debug_putws(L"EARLY WKEY FIFO IS FULL\r\n");
+		debug_putws(L"EARLY WKEY FIFO IS FULL\r\n");
 	}
 }
 
@@ -105,8 +105,8 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle,
 	GST->ConOut->OutputString(GST->ConOut, L"FORTH\r\n");
 	early_wkey_fifo = fifo16_new(128);
 	if (early_wkey_fifo == NULL) {
-    	debug_putws(L"ALLOC EARLY WKEY FIFO FAIL\r\n");
-    	return EFI_OUT_OF_RESOURCES;
+		debug_putws(L"ALLOC EARLY WKEY FIFO FAIL\r\n");
+		return EFI_OUT_OF_RESOURCES;
 	}
 	if (Event_Add(GST->ConIn->WaitForKey, cb_ConInWaitForKey, NULL) ==
 	    NULL) {
