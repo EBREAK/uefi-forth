@@ -299,8 +299,8 @@ struct forth_context *forth_task_new(struct forth_context *parent, uintptr_t ip)
 	fctx->win = 0;
 	fctx->next = fctx;
 	if (parent != NULL) {
+    	fctx->next = parent->next;
 		parent->next = fctx;
-		fctx->next = parent->next;
 	}
 	forth_task_nums += 1;
 	return fctx;
