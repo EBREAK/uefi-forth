@@ -491,7 +491,7 @@ void forth_o_tonumber(struct forth_context *fctx)
 	wp += 1;
 	fctx->w -= 1;
 	while (fctx->w > 0) {
-		fctx->tos |= whex2num(*wp) << ((fctx->w - 1) * 4);
+		fctx->tos |= ((uintptr_t)whex2num(*wp)) << ((fctx->w - 1) * 4ULL);
 		wp += 1;
 		fctx->w -= 1;
 	}
