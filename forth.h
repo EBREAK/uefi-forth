@@ -178,6 +178,8 @@ enum {
 	O_WFILL,
 	O_LFILL,
 	O_XFILL,
+	O_ALLOCATE,
+	O_FREE,
 
 	// IO WORDS
 	O_EARLY_WEMIT,

@@ -1141,6 +1141,22 @@ forth_wait_delayus:
 	case O_XFILL:
 		forth_o_xfill(fctx);
 		break;
+	case O_ALLOCATE:
+	{
+		EFI_STATUS Status;
+		fctx->w = 0;
+		Status = GST->BootServices->AllocatePool(EfiRuntimeServicesData,
+						fctx->tos,(VOID **)&fctx->w);
+		fctx->tos = fctx->w;
+		if (EFI_ERROR(Status)) {
+			fctx->tos = 0;
+		}
+		break;
+	}
+	case O_FREE:
+		GST->BootServices->FreePool(fctx->tos);
+		fctx->tos = forth_ppop(fctx);
+		break;
 	default:
 		fctx->sta |= FORTH_STA_HALT;
 		forth_dump_ctx(fctx);

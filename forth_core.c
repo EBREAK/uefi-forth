@@ -261,4 +261,12 @@ void forth_init_core(void)
 	DFWL(L"XFILL", O_XFILL);
 	DESC(L" ( ADDR COUNT XCHAR -- )");
 	ENDW();
+
+	DFWL(L"ALLOCATE", O_ALLOCATE);
+	DESC(L" ( COUNT -- 0|ADDR )");
+	ENDW();
+
+	DFWL(L"FREE", O_FREE);
+	DESC(L" ( ADDR -- )");
+	ENDW();
 }
