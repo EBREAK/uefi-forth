@@ -274,9 +274,9 @@ struct forth_context *forth_task_new(struct forth_context *parent, uintptr_t ip)
 	if (EFI_ERROR(Status)) {
 		return NULL;
 	}
+	GST->BootServices->SetMem(p, alloc_size, 0);
 	fctx = (struct forth_context *)p;
 	p += sizeof(struct forth_context);
-	GST->BootServices->SetMem(p, alloc_size, 0);
 	fctx->xt_wemit = forth_find(L"EARLY-WEMIT");
 	fctx->xt_wkey = forth_find(L"EARLY-WKEY");
 	fctx->xt_dot = forth_find(L"XHEX.");
