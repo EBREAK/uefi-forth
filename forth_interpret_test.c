@@ -11,6 +11,16 @@ const CHAR16 test_number_2[] = L"$1";
 const CHAR16 test_number_3[] = L"$19AF";
 const CHAR16 test_number_4[] = L"$19AFM";
 
+const CHAR16 FORTH_MOTD[] =
+	L" _____ ___  ____ _____ _   _ \r\n"
+	L"|  ___/ _ \\|  _ \\_   _| | | |\r\n"
+	L"| |_ | | | | |_) || | | |_| |\r\n"
+	L"|  _|| |_| |  _ < | | |  _  |\r\n"
+	L"|_|   \\___/|_| \\_\\|_| |_| |_|\r\n"
+	L" UEFI Event-Driven Multitasking Forth Interpreter \r\n"
+	L" STACK DEPTH: 128 | DICT RAM: 8MIB \r\n"
+	L"\r\n";
+
 void forth_test_interpret(void)
 {
 	// FIND
@@ -129,6 +139,14 @@ void forth_test_interpret(void)
 	COMPILE(L"XT>BODY");
 	LIT(wtmp->body);
 	COMPILE(L"=CHK", L"PZCHK");
+
+	// SHOW MOTD
+	LIT(&FORTH_MOTD[0]);
+	LIT(wstrlen(FORTH_MOTD));
+	COMPILE(L"WTYPE");
+
+	// DEFAULT ENABLE EARLY INPUT ECHO
+	COMPILE(L"EARLY-ECHO-ON");
 
 	// INTERPRET INTERPRET-FIX INTERPRET-LOOP
 	COMPILE(L"INTERPRET-LOOP");
