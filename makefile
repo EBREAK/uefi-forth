@@ -21,7 +21,7 @@ LDFLAGS += -filealign:16 -subsystem:efi_application -nodefaultlib -dll -debug -e
 
 OVMF_FD ?= /usr/share/ovmf/x64/OVMF.4m.fd
 
-all: $(TARGET) image
+all: $(TARGET) dis image
 
 $(TARGET): $(OBJS)
 	lld-link $(LDFLAGS) $^ -out:$@.EFI
@@ -44,7 +44,7 @@ image: $(TARGET)
 	genimage --loglevel 0
 
 
-qemu: image
+qemu: all
 	qemu-system-x86_64 \
 		-M q35 \
 		-m 256 \
