@@ -43,13 +43,14 @@ image: $(TARGET)
 		./ input/EFI/BOOT/
 	genimage --loglevel 0
 
+#		-nographic \
 
 qemu: all
 	qemu-system-x86_64 \
 		-M q35 \
 		-m 256 \
 		-cpu qemu64 \
-		-nographic \
+		-vga virtio \
 		-device virtio-rng-pci \
 		-drive if=pflash,format=raw,unit=0,file=$(OVMF_FD),readonly=on \
 		-hda images/disk.img \

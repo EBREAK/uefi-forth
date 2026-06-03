@@ -3,6 +3,7 @@
 #include "forth_core.h"
 #include "forth_io.h"
 #include "forth_interpret.h"
+#include "forth_gop.h"
 #include "forth_test.h"
 #include "fifo.h"
 #include "main.h"
@@ -340,6 +341,7 @@ void forth_init(void)
 	forth_init_core();
 	forth_init_io();
 	forth_init_interpret();
+	forth_init_gop();
 	forth_init_test();
 	//forth_words();
 	forth_init_task();
@@ -1156,6 +1158,51 @@ forth_wait_delayus:
 	case O_FREE:
 		GST->BootServices->FreePool(fctx->tos);
 		fctx->tos = forth_ppop(fctx);
+		break;
+	case O_GOP_INIT:
+		forth_o_gop_init(fctx);
+		break;
+	case O_GOP_CNT:
+		forth_o_gop_cnt(fctx);
+		break;
+	case O_GOP_SEL:
+		forth_o_gop_sel(fctx);
+		break;
+	case O_GOP_CUR:
+		forth_o_gop_cur(fctx);
+		break;
+	case O_GOP_MODE_CNT:
+		forth_o_gop_mode_cnt(fctx);
+		break;
+	case O_GOP_MODE_SEL:
+		forth_o_gop_mode_sel(fctx);
+		break;
+	case O_GOP_MODE_CUR:
+		forth_o_gop_mode_cur(fctx);
+		break;
+	case O_GOP_FB:
+		forth_o_gop_fb(fctx);
+		break;
+	case O_GOP_FBSIZE:
+		forth_o_gop_fbsize(fctx);
+		break;
+	case O_GOP_PIXFMT:
+		forth_o_gop_pixfmt(fctx);
+		break;
+	case O_GOP_PPSL:
+		forth_o_gop_ppsl(fctx);
+		break;
+	case O_GOP_HRES:
+		forth_o_gop_hres(fctx);
+		break;
+	case O_GOP_VRES:
+		forth_o_gop_vres(fctx);
+		break;
+	case O_GOP_PLOT:
+		forth_o_gop_plot(fctx);
+		break;
+	case O_GOP_SOLID:
+		forth_o_gop_solid(fctx);
 		break;
 	default:
 		fctx->sta |= FORTH_STA_HALT;

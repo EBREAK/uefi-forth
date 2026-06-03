@@ -103,6 +103,9 @@ enum {
 	FORTH_WAIT_DELAYUS,
 };
 
+extern uintptr_t forth_ppop(struct forth_context *fctx);
+extern void forth_ppush(struct forth_context *fctx, uintptr_t val);
+
 extern void forth_init(void);
 extern void forth_run(struct forth_context *fctx);
 extern void forth_run_all(void);
@@ -204,4 +207,21 @@ enum {
 	O_XT2WNLEN,
 	O_XT2PREV,
 	O_XT2BODY,
+
+	// UEFI GOP WORDS
+	O_GOP_INIT,
+	O_GOP_CNT,
+	O_GOP_SEL,
+	O_GOP_CUR,
+	O_GOP_MODE_CNT,
+	O_GOP_MODE_SEL,
+	O_GOP_MODE_CUR,
+	O_GOP_FB,
+	O_GOP_FBSIZE,
+	O_GOP_PIXFMT,
+	O_GOP_PPSL,
+	O_GOP_HRES,
+	O_GOP_VRES,
+	O_GOP_PLOT,
+	O_GOP_SOLID,
 };
