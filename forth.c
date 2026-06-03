@@ -1180,18 +1180,6 @@ forth_wait_delayus:
 	case O_GOP_MODE_CUR:
 		forth_o_gop_mode_cur(fctx);
 		break;
-	case O_GOP_FB:
-		forth_o_gop_fb(fctx);
-		break;
-	case O_GOP_FBSIZE:
-		forth_o_gop_fbsize(fctx);
-		break;
-	case O_GOP_PIXFMT:
-		forth_o_gop_pixfmt(fctx);
-		break;
-	case O_GOP_PPSL:
-		forth_o_gop_ppsl(fctx);
-		break;
 	case O_GOP_HRES:
 		forth_o_gop_hres(fctx);
 		break;
@@ -1203,6 +1191,12 @@ forth_wait_delayus:
 		break;
 	case O_GOP_SOLID:
 		forth_o_gop_solid(fctx);
+		break;
+	case O_GOP_TOPIXEL:
+		forth_o_gop_topixel(fctx);
+		break;
+	case O_GOP_TOCOLOR:
+		forth_o_gop_tocolor(fctx);
 		break;
 	default:
 		fctx->sta |= FORTH_STA_HALT;
