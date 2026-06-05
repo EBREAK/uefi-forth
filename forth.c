@@ -1192,6 +1192,12 @@ forth_wait_delayus:
 	case O_GOP_SOLID:
 		forth_o_gop_solid(fctx);
 		break;
+	case O_GOP_HLINE:
+		forth_o_gop_hline(fctx);
+		break;
+	case O_GOP_VLINE:
+		forth_o_gop_vline(fctx);
+		break;
 	case O_GOP_TOPIXEL:
 		forth_o_gop_topixel(fctx);
 		break;

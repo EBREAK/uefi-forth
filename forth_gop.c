@@ -7,7 +7,6 @@ static EFI_GUID gop_guid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
 
 static EFI_GRAPHICS_OUTPUT_PROTOCOL *gop_table[FORTH_GOP_MAX];
 static UINTN gop_cnt = 0;
-static UINTN gop_sel = 0;
 
 void forth_o_gop_init(struct forth_context *fctx)
 {
@@ -22,7 +21,7 @@ void forth_o_gop_init(struct forth_context *fctx)
 
 	if (EFI_ERROR(Status) || handle_count == 0) {
 		gop_cnt = 0;
-		gop_sel = 0;
+		fctx->gop_sel = 0;
 		forth_ppush(fctx, fctx->tos);
 		fctx->tos = 0;
 		return;
@@ -58,7 +57,7 @@ void forth_o_gop_init(struct forth_context *fctx)
 	}
 
 	GST->BootServices->FreePool(handle_buffer);
-	gop_sel = 0;
+	fctx->gop_sel = 0;
 
 	forth_ppush(fctx, fctx->tos);
 	fctx->tos = gop_cnt;
@@ -81,28 +80,28 @@ void forth_o_gop_sel(struct forth_context *fctx)
 	if (n >= gop_cnt) {
 		return;
 	}
-	gop_sel = n;
+	fctx->gop_sel = n;
 	fctx->tos = FORTH_TRUE;
 }
 
 void forth_o_gop_cur(struct forth_context *fctx)
 {
 	forth_ppush(fctx, fctx->tos);
-	fctx->tos = gop_sel;
+	fctx->tos = fctx->gop_sel;
 }
 
 void forth_o_gop_mode_cnt(struct forth_context *fctx)
 {
 	forth_ppush(fctx, fctx->tos);
-	if (gop_table[gop_sel] == NULL) {
+	if (gop_table[fctx->gop_sel] == NULL) {
 		fctx->tos = 0;
 		return;
 	}
-	if (gop_table[gop_sel]->Mode == NULL) {
+	if (gop_table[fctx->gop_sel]->Mode == NULL) {
 		fctx->tos = 0;
 		return;
 	}
-	fctx->tos = gop_table[gop_sel]->Mode->MaxMode;
+	fctx->tos = gop_table[fctx->gop_sel]->Mode->MaxMode;
 }
 
 void forth_o_gop_mode_sel(struct forth_context *fctx)
@@ -110,15 +109,15 @@ void forth_o_gop_mode_sel(struct forth_context *fctx)
 	UINTN n;
 	n = fctx->tos;
 	fctx->tos = FORTH_FALSE;
-	if (gop_table[gop_sel] == NULL) {
+	if (gop_table[fctx->gop_sel] == NULL) {
 		return;
 	}
-	if ((gop_table[gop_sel]->Mode != NULL) &&
-	    (n >= (gop_table[gop_sel]->Mode->MaxMode))) {
+	if ((gop_table[fctx->gop_sel]->Mode != NULL) &&
+	    (n >= (gop_table[fctx->gop_sel]->Mode->MaxMode))) {
 		return;
 	}
 	EFI_STATUS Status;
-	Status = gop_table[gop_sel]->SetMode(gop_table[gop_sel], n);
+	Status = gop_table[fctx->gop_sel]->SetMode(gop_table[fctx->gop_sel], n);
 	if (EFI_ERROR(Status)) {
 		return;
 	}
@@ -128,46 +127,46 @@ void forth_o_gop_mode_sel(struct forth_context *fctx)
 void forth_o_gop_mode_cur(struct forth_context *fctx)
 {
 	forth_ppush(fctx, fctx->tos);
-	if (gop_table[gop_sel] == NULL) {
+	if (gop_table[fctx->gop_sel] == NULL) {
 		fctx->tos = 0;
 		return;
 	}
-	if (gop_table[gop_sel]->Mode == NULL) {
+	if (gop_table[fctx->gop_sel]->Mode == NULL) {
 		fctx->tos = 0;
 		return;
 	}
-	fctx->tos = gop_table[gop_sel]->Mode->Mode;
+	fctx->tos = gop_table[fctx->gop_sel]->Mode->Mode;
 }
 
 void forth_o_gop_hres(struct forth_context *fctx)
 {
 	forth_ppush(fctx, fctx->tos);
-	if (gop_table[gop_sel] == NULL) {
+	if (gop_table[fctx->gop_sel] == NULL) {
 		fctx->tos = 0;
 		return;
 	}
-	if (gop_table[gop_sel]->Mode == NULL) {
+	if (gop_table[fctx->gop_sel]->Mode == NULL) {
 		fctx->tos = 0;
 		return;
 	}
-	fctx->tos = gop_table[gop_sel]->Mode->Info->HorizontalResolution;
+	fctx->tos = gop_table[fctx->gop_sel]->Mode->Info->HorizontalResolution;
 }
 
 void forth_o_gop_vres(struct forth_context *fctx)
 {
 	forth_ppush(fctx, fctx->tos);
-	if (gop_table[gop_sel] == NULL) {
+	if (gop_table[fctx->gop_sel] == NULL) {
 		fctx->tos = 0;
 		return;
 	}
-	if (gop_table[gop_sel]->Mode == NULL) {
+	if (gop_table[fctx->gop_sel]->Mode == NULL) {
 		fctx->tos = 0;
 		return;
 	}
-	fctx->tos = gop_table[gop_sel]->Mode->Info->VerticalResolution;
+	fctx->tos = gop_table[fctx->gop_sel]->Mode->Info->VerticalResolution;
 }
 
-void gop_blt_fill(uint32_t x, uint32_t y, uint32_t w, uint32_t h,
+void gop_blt_fill(UINTN gop_sel, uint32_t x, uint32_t y, uint32_t w, uint32_t h,
 		  uint32_t color)
 {
 	EFI_GRAPHICS_OUTPUT_BLT_PIXEL_UNION pixel;
@@ -194,9 +193,10 @@ void gop_blt_fill(uint32_t x, uint32_t y, uint32_t w, uint32_t h,
 				EfiBltVideoFill, 0, 0, x, y, w, h, 0);
 }
 
-static inline void gop_plot(uint32_t x, uint32_t y, uint32_t color)
+static inline void gop_plot(UINTN gop_sel, uint32_t x, uint32_t y,
+			    uint32_t color)
 {
-	gop_blt_fill(x, y, 1, 1, color);
+	gop_blt_fill(gop_sel, x, y, 1, 1, color);
 }
 
 void forth_o_gop_plot(struct forth_context *fctx)
@@ -206,7 +206,7 @@ void forth_o_gop_plot(struct forth_context *fctx)
 	x = forth_ppop(fctx);
 	color = forth_ppop(fctx);
 	fctx->tos = forth_ppop(fctx);
-	gop_plot(x, y, color);
+	gop_plot(fctx->gop_sel, x, y, color);
 }
 
 void forth_o_gop_solid(struct forth_context *fctx)
@@ -218,7 +218,41 @@ void forth_o_gop_solid(struct forth_context *fctx)
 	x = forth_ppop(fctx);
 	color = forth_ppop(fctx);
 	fctx->tos = forth_ppop(fctx);
-	gop_blt_fill(x, y, w, h, color);
+	gop_blt_fill(fctx->gop_sel, x, y, w, h, color);
+}
+
+void gop_hline(UINTN gop_sel, uint32_t x, uint32_t y, uint32_t len,
+	       uint32_t color)
+{
+	gop_blt_fill(gop_sel, x, y, len, 1, color);
+}
+
+void gop_vline(UINTN gop_sel, uint32_t x, uint32_t y, uint32_t len,
+	       uint32_t color)
+{
+	gop_blt_fill(gop_sel, x, y, 1, len, color);
+}
+
+void forth_o_gop_hline(struct forth_context *fctx)
+{
+	uint32_t color, x, y, len;
+	len = fctx->tos;
+	y = forth_ppop(fctx);
+	x = forth_ppop(fctx);
+	color = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+	gop_hline(fctx->gop_sel, x, y, len, color);
+}
+
+void forth_o_gop_vline(struct forth_context *fctx)
+{
+	uint32_t color, x, y, len;
+	len = fctx->tos;
+	y = forth_ppop(fctx);
+	x = forth_ppop(fctx);
+	color = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+	gop_vline(fctx->gop_sel, x, y, len, color);
 }
 
 static uint32_t color2pixel(uint8_t r, uint8_t g, uint8_t b, uint8_t x)
@@ -232,7 +266,7 @@ static uint32_t color2pixel(uint8_t r, uint8_t g, uint8_t b, uint8_t x)
 }
 
 static void pixel2color(uint32_t color, uint8_t *r, uint8_t *g, uint8_t *b,
-		 uint8_t *x)
+			uint8_t *x)
 {
 	EFI_GRAPHICS_OUTPUT_BLT_PIXEL_UNION pixel;
 	pixel.Raw = color;
@@ -309,6 +343,14 @@ void forth_init_gop(void)
 	DESC(L" ( COLOR X Y W H -- ) ");
 	ENDW();
 
+	DFWL(L"GOP-HLINE", O_GOP_HLINE);
+	DESC(L" ( COLOR X Y LEN -- ) ");
+	ENDW();
+
+	DFWL(L"GOP-VLINE", O_GOP_VLINE);
+	DESC(L" ( COLOR X Y LEN -- ) ");
+	ENDW();
+
 	CONSTANT(L"PIXEL-BLACK", color2pixel(0, 0, 0, 0xFF));
 	ENDW();
 
@@ -323,8 +365,8 @@ void forth_init_gop(void)
 
 	DFWH(L"GOP-BLANK");
 	DESC(L" ( -- ) MAKE GOP SCREEN BLANK ");
-	COMPILE(L"PIXEL-BLACK", L"$0", L"$0", L"GOP-HRES", L"GOP-VRES", L"GOP-SOLID",
-		L"EXIT");
+	COMPILE(L"PIXEL-BLACK", L"$0", L"$0", L"GOP-HRES", L"GOP-VRES",
+		L"GOP-SOLID", L"EXIT");
 	ENDW();
 
 	DFWL(L">PIXEL", O_GOP_TOPIXEL);

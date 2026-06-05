@@ -78,6 +78,7 @@ struct forth_context {
 
 	uintptr_t wib;
 	uintptr_t win;
+	uintptr_t gop_sel;
 
 	uintptr_t xt_wemit;
 	uintptr_t xt_wkey;
@@ -220,6 +221,8 @@ enum {
 	O_GOP_VRES,
 	O_GOP_PLOT,
 	O_GOP_SOLID,
+	O_GOP_HLINE,
+	O_GOP_VLINE,
 	O_GOP_TOPIXEL,
 	O_GOP_TOCOLOR,
 };
