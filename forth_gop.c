@@ -233,6 +233,15 @@ void gop_vline(UINTN gop_sel, uint32_t x, uint32_t y, uint32_t len,
 	gop_blt_fill(gop_sel, x, y, 1, len, color);
 }
 
+void gop_frame(UINTN gop_sel, uint32_t x, uint32_t y, uint32_t w, uint32_t h,
+	       uint32_t color)
+{
+	gop_hline(gop_sel, x, y, w, color);
+	gop_vline(gop_sel, x, y, h, color);
+	gop_vline(gop_sel, x + w, y, h, color);
+	gop_hline(gop_sel, x, y + h, w, color);
+}
+
 void forth_o_gop_hline(struct forth_context *fctx)
 {
 	uint32_t color, x, y, len;
@@ -253,6 +262,18 @@ void forth_o_gop_vline(struct forth_context *fctx)
 	color = forth_ppop(fctx);
 	fctx->tos = forth_ppop(fctx);
 	gop_vline(fctx->gop_sel, x, y, len, color);
+}
+
+void forth_o_gop_frame(struct forth_context *fctx)
+{
+	uint32_t color, x, y, w, h;
+	h = fctx->tos;
+	w = forth_ppop(fctx);
+	y = forth_ppop(fctx);
+	x = forth_ppop(fctx);
+	color = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+	gop_frame(fctx->gop_sel, x, y, w, h, color);
 }
 
 static uint32_t color2pixel(uint8_t r, uint8_t g, uint8_t b, uint8_t x)
@@ -349,6 +370,10 @@ void forth_init_gop(void)
 
 	DFWL(L"GOP-VLINE", O_GOP_VLINE);
 	DESC(L" ( COLOR X Y LEN -- ) ");
+	ENDW();
+
+	DFWL(L"GOP-FRAME", O_GOP_FRAME);
+	DESC(L" ( COLOR X Y W H -- ) ");
 	ENDW();
 
 	CONSTANT(L"PIXEL-WHITE", color2pixel(0xFF, 0xFF, 0xFF, 0xFF));

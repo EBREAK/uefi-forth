@@ -17,6 +17,7 @@ extern void forth_o_gop_plot(struct forth_context *fctx);
 extern void forth_o_gop_solid(struct forth_context *fctx);
 extern void forth_o_gop_hline(struct forth_context *fctx);
 extern void forth_o_gop_vline(struct forth_context *fctx);
+extern void forth_o_gop_frame(struct forth_context *fctx);
 extern void forth_o_gop_topixel(struct forth_context *fctx);
 extern void forth_o_gop_tocolor(struct forth_context *fctx);
 extern void forth_init_gop(void);
