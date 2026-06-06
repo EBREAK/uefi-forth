@@ -184,6 +184,7 @@ enum {
 	O_XFILL,
 	O_ALLOCATE,
 	O_FREE,
+	O_EARLY_CLR,
 
 	// IO WORDS
 	O_EARLY_WEMIT,

@@ -1081,6 +1081,9 @@ forth_wait_early_wkey:
 	case O_EARLY_ECHO_ON:
 		early_echo = true;
 		break;
+	case O_EARLY_CLR:
+		GST->ConOut->ClearScreen(GST->ConOut);
+		break;
 	case O_DELAYUS: {
 		uint64_t delay_100ns = fctx->tos * 10;
 		fctx->tos = forth_ppop(fctx);

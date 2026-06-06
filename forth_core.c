@@ -233,6 +233,9 @@ void forth_init_core(void)
 	DFWL(L"EARLY-ECHO-ON", O_EARLY_ECHO_ON);
 	ENDW();
 
+	DFWL(L"EARLY-CLR", O_EARLY_CLR);
+	ENDW();
+
 	DFWL(L"TASK-NEW", O_TASK_NEW);
 	DESC(L" ( IP -- TASK-ADDR )");
 	ENDW();
