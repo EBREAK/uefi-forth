@@ -527,6 +527,21 @@ void forth_o_xt2body(struct forth_context *fctx)
 	fctx->tos = (uintptr_t)word->body;
 }
 
+void forth_o_blen_load(struct forth_context *fctx)
+{
+	struct forth_word *word;
+	word = (struct forth_word *)fctx->tos;
+	fctx->tos = (uintptr_t)word->blen;
+}
+
+void forth_o_blen_store(struct forth_context *fctx)
+{
+	struct forth_word *word;
+	word = (struct forth_word *)fctx->tos;
+	word->blen = forth_ppop(fctx);
+	fctx->tos = forth_ppop(fctx);
+}
+
 void forth_o_cmove(struct forth_context *fctx)
 {
 	uint8_t *dst;
@@ -1117,6 +1132,12 @@ forth_wait_delayus:
 		break;
 	case O_XT2BODY:
 		forth_o_xt2body(fctx);
+		break;
+	case O_BLEN_LOAD:
+		forth_o_blen_load(fctx);
+		break;
+	case O_BLEN_STORE:
+		forth_o_blen_store(fctx);
 		break;
 	case O_TASK_NEW:
 		fctx->w = forth_task_new(fctx, fctx->tos);

@@ -141,16 +141,6 @@ void forth_init_interpret(void)
 	CONSTANT(L"LATEST", &FORTH_LATEST);
 	ENDW();
 
-	DFWH(L";");
-	DESC(L" ( XT -- )");
-	COMPILE(L"[", L"LATEST", L"X!");
-	// TODO: UPDATE BLEN
-	LIT(L"EXIT");
-	LIT(wstrlen(L"EXIT"));
-	COMPILE(L"FIND", L"X,", L"EXIT");
-	ENDW();
-	IMMEDIATE();
-
 	DFWL(L"XT>WNAME", O_XT2WNAME);
 	ENDW();
 	DFWL(L"XT>WNLEN", O_XT2WNLEN);
@@ -159,6 +149,22 @@ void forth_init_interpret(void)
 	ENDW();
 	DFWL(L"XT>BODY", O_XT2BODY);
 	ENDW();
+
+	DFWL(L"BLEN@", O_BLEN_LOAD);
+	ENDW();
+	DFWL(L"BLEN!", O_BLEN_STORE);
+	ENDW();
+
+	DFWH(L";");
+	DESC(L" ( XT -- )");
+	LIT(L"EXIT");
+	LIT(wstrlen(L"EXIT"));
+	COMPILE(L"FIND", L"X,");
+	COMPILE(L"HERE", L"OVER", L"XT>BODY", L"-");
+	COMPILE(L"OVER", L"BLEN!");
+	COMPILE(L"LATEST", L"X!", L"[", L"EXIT");
+	ENDW();
+	IMMEDIATE();
 
 	DFWH(L"WORDS");
 	COMPILE(L"LATEST", L"X@");
