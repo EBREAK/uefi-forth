@@ -42,7 +42,7 @@ image: $(TARGET)
 		--exclude 'images/*' \
 		./ input/EFI/BOOT/
 	genimage --loglevel 0
-	xz -f -k -z -v -9 images/disk.img
+	lz4 -f -k -v -12 images/disk.img
 
 #		-nographic \
 
