@@ -8,7 +8,7 @@ const CHAR16 wstr_msg_pser[] = L"\r\nPARAM STACK ERROR\r\n";
 void forth_init_interpret(void)
 {
 	DFWL(L"FIND", O_FIND);
-	DESC(L"( WSTR-ADDR WCOUNT -- 0|XT ) \\ WSTR-ADDR IS ADDRESS FOR UTF16 STRING, WCOUNT IS UTF16 CHAR COUNT, IF FOUND RETURN XT, IF NOT FOUND RETURN 0");
+	DESC(L"( WSTR-ADDR WCOUNT -- 0|XT ) \\ WSTR-ADDR IS UTF16 STRING ADDRESS, WCOUNT IS UTF16 CHAR COUNT, IF FOUND RETURN XT, IF NOT FOUND RETURN 0");
 	ENDW();
 
 	DFWL(L"]", O_COMPON);
@@ -29,12 +29,16 @@ void forth_init_interpret(void)
 	ENDW();
 
 	DFWL(L"WIB", O_WIB);
+	DESC(L"( -- ADDR ) \\ GET WORD INPUT BUFFER");
 	ENDW();
 	DFWL(L"WIN", O_WIN);
+	DESC(L"( -- ADDR ) \\ GET WORD INPUT LENGTH");
 	ENDW();
 	CONSTANT(L"FORTH-NAME-MAXLEN", FORTH_NAME_MAXLEN);
+	DESC(L"( -- N ) \\ GET NAME MAX LENGTH");
 	ENDW();
 	DFWH(L"WIB-RST");
+	DESC(L"( -- ) \\ RESET WORD INPUT BUFFER");
 	COMPILE(L"$0", L"WIN", L"X!", L"EXIT");
 	ENDW();
 	DFWH(L"WIB-PUSH");
@@ -45,6 +49,7 @@ void forth_init_interpret(void)
 		L"WIN", L"X!", L"EXIT");
 	ENDW();
 	DFWH(L"DELIM?");
+	DESC(L"( WCHAR -- FLAG ) \\ TEST IF WCHAR IS DELIMITER");
 	// : DELIM? ( WCHAR -- FLAG ) DUP $20 = OVER $D = OR SWAP $A = OR ;
 	COMPILE(L"DUP");
 	LIT(L' ');
@@ -52,6 +57,7 @@ void forth_init_interpret(void)
 		L"EXIT");
 	ENDW();
 	DFWH(L"_WIB-WORD");
+	DESC(L"( -- ) \\ READ WORD FROM INPUT (INNER)");
 	// : _WIB-WORD WIB-RST BEGIN WKEY DUP DELIM? IF DROP EXIT THEN WIB-PUSH AGAIN ;
 	COMPILE(L"WIB-RST");
 	BEGIN();
@@ -64,6 +70,7 @@ void forth_init_interpret(void)
 	COMPILE(L"EXIT");
 	ENDW();
 	DFWH(L"WIB-WORD");
+	DESC(L"( -- ) \\ READ WORD FROM INPUT");
 	// : WIB-WORD BEGIN _WIB-WORD WIN X@ 0<> UNTIL ;
 	BEGIN();
 	COMPILE(L"_WIB-WORD", L"WIN", L"X@", L"0<>");
@@ -72,10 +79,12 @@ void forth_init_interpret(void)
 	ENDW();
 
 	DFWH(L"INTERPRET-RST");
+	DESC(L"( -- ) \\ RESET INTERPRETER");
 	COMPILE(L"PSP-RST", L"WIB-RST", L"[", L"EXIT");
 	ENDW();
 
 	DFWH(L"INTERPRET-FIX");
+	DESC(L"( -- ) \\ CHECK AND FIX PARAM STACK ERROR");
 	COMPILE(L"STA@", L"FORTH-STA-PSER", L"AND");
 	IF();
 	COMPILE(L"INTERPRET-RST");
@@ -95,6 +104,7 @@ void forth_init_interpret(void)
 	ENDW();
 
 	DFWH(L"INTERPRET");
+	DESC(L"( -- ) \\ INTERPRET ONE WORD");
 	COMPILE(L"WIB-WORD", L"WIB", L"WIN", L"X@", L"FIND", L"DUP");
 	IF();
 	COMPILE(L"DUP", L"IMMEDIATE?");
@@ -124,6 +134,7 @@ void forth_init_interpret(void)
 	ENDW();
 
 	DFWH(L"INTERPRET-LOOP");
+	DESC(L"( -- ) \\ INTERPRET LOOP FOREVER");
 	BEGIN();
 	COMPILE(L"INTERPRET", L"INTERPRET-FIX");
 	AGAIN();
@@ -139,6 +150,7 @@ void forth_init_interpret(void)
 	ENDW();
 
 	CONSTANT(L"LATEST", &FORTH_LATEST);
+	DESC(L"( -- ADDR ) \\ GET LATEST WORD ADDR");
 	ENDW();
 
 	DFWL(L"XT>WNAME", O_XT2WNAME);
@@ -176,11 +188,13 @@ void forth_init_interpret(void)
 	ENDW();
 
 	DFWH(L"BEGIN");
+	DESC(L"( -- ADDR ) \\ BEGIN LOOP, RETURN ADDR");
 	COMPILE(L"HERE", L"EXIT");
 	ENDW();
 	IMMEDIATE();
 
 	DFWH(L"AGAIN");
+	DESC(L"( ADDR -- ) \\ RESOLVE AGAIN LOOP");
 	LIT(L"BRANCH");
 	LIT(wstrlen(L"BRANCH"));
 	COMPILE(L"FIND", L"X,", L"X,", L"EXIT");
@@ -188,6 +202,7 @@ void forth_init_interpret(void)
 	IMMEDIATE();
 
 	DFWH(L"UNTIL");
+	DESC(L"( ADDR -- ) \\ RESOLVE UNTIL LOOP");
 	LIT(L"ZBRANCH");
 	LIT(wstrlen(L"ZBRANCH"));
 	COMPILE(L"FIND", L"X,", L"X,", L"EXIT");
@@ -195,6 +210,7 @@ void forth_init_interpret(void)
 	IMMEDIATE();
 
 	DFWH(L"IF");
+	DESC(L"( -- ADDR ) \\ BEGIN IF BRANCH");
 	LIT(L"ZBRANCH");
 	LIT(wstrlen(L"ZBRANCH"));
 	COMPILE(L"FIND", L"X,", L"HERE", L"$0", L"X,", L"EXIT");
@@ -202,15 +218,18 @@ void forth_init_interpret(void)
 	IMMEDIATE();
 
 	DFWH(L"THEN");
+	DESC(L"( ADDR -- ) \\ RESOLVE IF BRANCH");
 	COMPILE(L"HERE", L"SWAP", L"X!", L"EXIT");
 	ENDW();
 	IMMEDIATE();
 
 	DFWH(L"'");
+	DESC(L"( -- XT ) \\ FIND WORD XT");
 	COMPILE(L"WIB-WORD", L"WIB", L"WIN", L"X@", L"FIND", L"EXIT");
 	ENDW();
 
 	DFWH(L"(");
+	DESC(L"( -- ) \\ SKIP PAREN COMMENT");
 	BEGIN();
 	COMPILE(L"WKEY");
 	LIT(L')');
@@ -221,6 +240,7 @@ void forth_init_interpret(void)
 	IMMEDIATE();
 
 	DFWH(L"\\");
+	DESC(L"( -- ) \\ SKIP TO END OF LINE COMMENT");
 	BEGIN();
 	COMPILE(L"WKEY", L"DUP");
 	LIT(L'\r');

@@ -377,22 +377,31 @@ void forth_init_gop(void)
 	ENDW();
 
 	CONSTANT(L"PIXEL-WHITE", color2pixel(0xFF, 0xFF, 0xFF, 0xFF));
+	DESC(L"( -- C ) \\ WHITE PIXEL COLOR");
 	ENDW();
 	CONSTANT(L"PIXEL-BLACK",   color2pixel(0x00, 0x00, 0x00, 0xFF));
+	DESC(L"( -- C ) \\ BLACK PIXEL COLOR");
 	ENDW();
 	CONSTANT(L"PIXEL-RED",     color2pixel(0xFF, 0x00, 0x00, 0xFF));
+	DESC(L"( -- C ) \\ RED PIXEL COLOR");
 	ENDW();
 	CONSTANT(L"PIXEL-GREEN",   color2pixel(0x00, 0xFF, 0x00, 0xFF));
+	DESC(L"( -- C ) \\ GREEN PIXEL COLOR");
 	ENDW();
 	CONSTANT(L"PIXEL-BLUE",    color2pixel(0x00, 0x00, 0xFF, 0xFF));
+	DESC(L"( -- C ) \\ BLUE PIXEL COLOR");
 	ENDW();
 	CONSTANT(L"PIXEL-YELLOW",  color2pixel(0xFF, 0xFF, 0x00, 0xFF));
+	DESC(L"( -- C ) \\ YELLOW PIXEL COLOR");
 	ENDW();
 	CONSTANT(L"PIXEL-MAGENTA", color2pixel(0xFF, 0x00, 0xFF, 0xFF));
+	DESC(L"( -- C ) \\ MAGENTA PIXEL COLOR");
 	ENDW();
 	CONSTANT(L"PIXEL-CYAN",    color2pixel(0x00, 0xFF, 0xFF, 0xFF));
+	DESC(L"( -- C ) \\ CYAN PIXEL COLOR");
 	ENDW();
 	CONSTANT(L"PIXEL-GRAY",  color2pixel(0x77, 0x77, 0x77, 0xFF));
+	DESC(L"( -- C ) \\ GRAY PIXEL COLOR");
 	ENDW();
 
 	DFWH(L"GOP-BLANK");
