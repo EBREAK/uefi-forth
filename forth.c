@@ -527,6 +527,20 @@ void forth_o_xt2body(struct forth_context *fctx)
 	fctx->tos = (uintptr_t)word->body;
 }
 
+void forth_o_xt2wdesc(struct forth_context *fctx)
+{
+	struct forth_word *word;
+	word = (struct forth_word *)fctx->tos;
+	fctx->tos = (uintptr_t)word->desc;
+}
+
+void forth_o_xt2wdlen(struct forth_context *fctx)
+{
+	struct forth_word *word;
+	word = (struct forth_word *)fctx->tos;
+	fctx->tos = (uintptr_t)wstrlen(word->desc);
+}
+
 void forth_o_blen_load(struct forth_context *fctx)
 {
 	struct forth_word *word;
@@ -1089,6 +1103,12 @@ forth_wait_early_wkey:
 		break;
 	case O_XT2PREV:
 		forth_o_xt2prev(fctx);
+		break;
+	case O_XT2WDESC:
+		forth_o_xt2wdesc(fctx);
+		break;
+	case O_XT2WDLEN:
+		forth_o_xt2wdlen(fctx);
 		break;
 	case O_EARLY_ECHO_OFF:
 		early_echo = false;

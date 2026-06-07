@@ -161,6 +161,10 @@ void forth_init_interpret(void)
 	ENDW();
 	DFWL(L"XT>BODY", O_XT2BODY);
 	ENDW();
+	DFWL(L"XT>WDESC", O_XT2WDESC);
+	ENDW();
+	DFWL(L"XT>WDLEN", O_XT2WDLEN);
+	ENDW();
 
 	DFWL(L"BLEN@", O_BLEN_LOAD);
 	ENDW();
@@ -265,5 +269,17 @@ void forth_init_interpret(void)
 	THEN();
 	COMPILE(L">R", L"2DUP", L"2*", L"+", L"R>", L"SWAP", L"W!", L"1+");
 	AGAIN();
+	ENDW();
+
+	DFWH(L"HELP");
+	COMPILE(L"WIB-WORD", L"WIB", L"WIN", L"X@", L"FIND", L"DUP");
+	IF();
+	COMPILE(L"DUP", L"XT>WDESC", L"DUP");
+	IF();
+	COMPILE(L"CR", L"SWAP", L"XT>WDLEN", L"WTYPE", L"CR", L"EXIT");
+	THEN();
+	COMPILE(L"DROP");
+	THEN();
+	COMPILE(L"DROP", L"EXIT");
 	ENDW();
 }
