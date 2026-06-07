@@ -225,4 +225,19 @@ void forth_init_interpret(void)
 	COMPILE(L"EXIT");
 	ENDW();
 	IMMEDIATE();
+
+	DFWH(L"W\"");
+	DESC(L" ( ADDR -- ADDR COUNT )");
+	// : " $0 BEGIN WKEY DUP $22 = IF DROP EXIT THEN >R 2DUP 2* + R> SWAP W! 1+ AGAIN ;
+	COMPILE(L"$0");
+	BEGIN();
+	COMPILE(L"WKEY", L"DUP");
+	LIT(L'\"');
+	COMPILE(L"=");
+	IF();
+	COMPILE(L"DROP", L"EXIT");
+	THEN();
+	COMPILE(L">R", L"2DUP", L"2*", L"+", L"R>", L"SWAP", L"W!", L"1+");
+	AGAIN();
+	ENDW();
 }
